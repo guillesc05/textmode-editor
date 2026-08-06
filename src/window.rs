@@ -20,10 +20,10 @@ fn centered_rectangle(draw_handle: &RaylibDrawHandle, size: Vector2) -> Rectangl
 }
 
 pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
+    rl.gui_set_style(GuiControl::DEFAULT, GuiDefaultProperty::TEXT_SIZE, 25);
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
 
-        d.gui_set_style(GuiControl::DEFAULT, GuiDefaultProperty::TEXT_SIZE, 25);
         let res = d.gui_message_box(centered_rectangle(&d, Vector2::new(500.0, 500.0)), "Textmode Editor", "What do you want to do?", "NewProject;LoadProject");
 
         if res == 1{
@@ -40,15 +40,21 @@ pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChan
                 }
             }
         }
-        
+
         d.clear_background(Color::BLACK);
     }
 
     StateChange::Exit
 }
 
-pub fn new_canvas_popup(){
+pub fn new_canvas_popup(rl: &mut RaylibHandle, thread: &RaylibThread){
+    while !rl.window_should_close() {
+        let mut d = rl.begin_drawing(&thread);
+        d.gui_message_box(centered_rectangle(&d, Vector2::new(400.0, 200.0)), "New project", "Insert sizes of project", "");
 
+        d.clear_background(Color::BLACK);
+
+    }
 }
 
 pub fn load_project() -> Option<TextmodeInfo>{

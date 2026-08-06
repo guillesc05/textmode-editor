@@ -18,7 +18,7 @@ fn main() {
 
     match welcome_response{
         NewProject =>{
-            window::new_canvas_popup();
+            window::new_canvas_popup(&mut rl, &thread);
         },
         OpenCanvas(textmode_info) =>{
 
