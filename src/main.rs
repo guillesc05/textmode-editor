@@ -1,4 +1,8 @@
-use raylib::prelude::*;
+use raylib::{ffi::Rectangle, prelude::*};
+
+use crate::window::WelcomeScreenResponse::{Exit, LoadProject, NewProject};
+
+mod window;
 
 fn main() {
 
@@ -7,10 +11,17 @@ fn main() {
         .title("Hello, World")
         .build();
 
-    while !rl.window_should_close() {
-        let mut d = rl.begin_drawing(&thread);
+    let mut font = rl.load_font(&thread, "dungeon-mode.ttf").unwrap();
 
-        d.clear_background(Color::WHITE);
-        d.draw_text("Hello, world!", 12, 12, 20, Color::BLACK);
+    let welcome_response = window::welcome_window(&mut rl, &thread);
+
+    match welcome_response{
+        NewProject =>{
+            window::new_canvas_popup();
+        },
+        LoadProject =>{
+            window::load_project();
+        },
+        Exit =>{}
     }
 }
