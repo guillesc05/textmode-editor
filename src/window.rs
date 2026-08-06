@@ -1,9 +1,14 @@
+use std::fs;
+
 use raylib::{ffi::Rectangle, prelude::*};
 use raylib::{RaylibHandle, RaylibThread};
 
-pub enum WelcomeScreenResponse{
+use crate::textmode_info::{self, TextmodeInfo};
+use crate::window::StateChange::OpenCanvas;
+
+pub enum StateChange{
     NewProject,
-    LoadProject,
+    OpenCanvas(TextmodeInfo),
     Exit
 }
 
@@ -14,7 +19,7 @@ fn centered_rectangle(draw_handle: &RaylibDrawHandle, size: Vector2) -> Rectangl
     Rectangle { x: half_screen_width - size.x/2.0, y: half_screen_height - size.y / 2.0, width: size.x, height: size.y }
 }
 
-pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> WelcomeScreenResponse{
+pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
 
@@ -22,32 +27,52 @@ pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> WelcomeSc
         let res = d.gui_message_box(centered_rectangle(&d, Vector2::new(500.0, 500.0)), "Textmode Editor", "What do you want to do?", "NewProject;LoadProject");
 
         if res == 1{
-            return WelcomeScreenResponse::NewProject
+            return StateChange::NewProject
         }
 
         if res == 2{
-            load_project();
+            match load_project(){
+                Some(textmode_info) =>{
+                    return OpenCanvas(textmode_info)
+                },
+                None =>{
+                    return StateChange::Exit
+                }
+            }
         }
-
+        
         d.clear_background(Color::BLACK);
     }
 
-    WelcomeScreenResponse::Exit
+    StateChange::Exit
 }
 
 pub fn new_canvas_popup(){
 
 }
 
-pub fn load_project(){
+pub fn load_project() -> Option<TextmodeInfo>{
     let res = rfd::FileDialog::new().add_filter("Images", &["json"]).pick_file();
 
     match res{
         None => {
-
+            None
         },
         Some(path) =>{
-
+            match fs::read_to_string(path.clone()){
+            Err(err) =>{
+                return None
+            },
+            Ok(file_string) =>{
+                let textmode_info: Result<TextmodeInfo, serde_json::Error> = serde_json::from_str(&file_string);
+                match textmode_info{
+                    Err(err) =>{
+                        return None
+                    }
+                    Ok(s) =>{ Some(s)}
+                }
+            }
+        }
         }
     }
     

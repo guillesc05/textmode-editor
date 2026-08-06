@@ -1,8 +1,9 @@
 use raylib::{ffi::Rectangle, prelude::*};
 
-use crate::window::WelcomeScreenResponse::{Exit, LoadProject, NewProject};
+use crate::window::StateChange::{Exit, NewProject, OpenCanvas};
 
 mod window;
+mod textmode_info;
 
 fn main() {
 
@@ -19,9 +20,9 @@ fn main() {
         NewProject =>{
             window::new_canvas_popup();
         },
-        LoadProject =>{
-            window::load_project();
-        },
+        OpenCanvas(textmode_info) =>{
+
+        }
         Exit =>{}
     }
 }
