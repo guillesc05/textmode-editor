@@ -41,7 +41,7 @@ pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChan
     StateChange::Exit
 }
 
-pub fn new_canvas_popup(rl: &mut RaylibHandle, thread: &RaylibThread){
+pub fn new_canvas_popup(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     let mut x_value: i32 = 40;
     let mut y_value: i32 = 40;
 
@@ -68,11 +68,15 @@ pub fn new_canvas_popup(rl: &mut RaylibHandle, thread: &RaylibThread){
 
         let confitm_button_rect = relative_rectangle_centered(&parent_rect, Vector2::new(0.5, 0.75), Vector2::new(0.5, 0.15));
 
-        d.gui_button(confitm_button_rect, "Confirm");
+        if d.gui_button(confitm_button_rect, "Confirm"){
+            return OpenCanvas(TextmodeInfo::empty_info(x_value as u32, y_value as u32, "dungeon-mode.ttf".to_string()))
+        }
 
 
         d.clear_background(Color::BLACK);
     }
+
+    StateChange::Exit
 }
 
 pub fn load_project() -> Option<TextmodeInfo>{
