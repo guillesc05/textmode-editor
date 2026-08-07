@@ -4,6 +4,7 @@ use crate::window::StateChange::{Exit, NewProject, OpenCanvas};
 
 mod window;
 mod textmode_info;
+mod rect_utils;
 
 fn main() {
 
