@@ -5,9 +5,10 @@ use crate::{rect_utils::{centered_rectangle, relative_rectangle_centered}, textm
 pub fn new_canvas_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     let mut x_value: i32 = 40;
     let mut y_value: i32 = 40;
-
+    
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
+        d.clear_background(Color::BLACK);
 
         //Parent
         let parent_rect = centered_rectangle(&d, Vector2::new(d.get_screen_width() as f32/2.0, d.get_screen_height() as f32/2.0));
@@ -37,7 +38,6 @@ pub fn new_canvas_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateC
         }
 
 
-        d.clear_background(Color::BLACK);
     }
 
     StateChange::Exit

@@ -26,7 +26,7 @@ pub fn state_func(state: &mut StateChange, rl: &mut RaylibHandle, thread: &Rayli
             new_canvas_window(rl, &thread)
         },
         StateChange::OpenCanvas(textmode_info) =>{
-            editor_window(textmode_info.to_owned(), rl, &thread, &rl.get_frame_time())
+            editor_window(textmode_info.to_owned(), rl, &thread)
         }
         StateChange::Exit =>{StateChange::Exit}
     };

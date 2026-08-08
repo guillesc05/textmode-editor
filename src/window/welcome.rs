@@ -8,6 +8,7 @@ pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChan
     rl.gui_set_style(GuiControl::DEFAULT, GuiDefaultProperty::TEXT_SIZE, 25);
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
+        d.clear_background(Color::BLACK);
 
         let rectangle_box = centered_rectangle(&d, Vector2::new(d.get_screen_width() as f32 /2.0, d.get_screen_height() as f32 / 2.0));
 
@@ -28,7 +29,6 @@ pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChan
             }
         }
 
-        d.clear_background(Color::BLACK);
     }
 
     StateChange::Exit

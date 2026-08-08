@@ -1,4 +1,4 @@
-use raylib::{RaylibHandle, RaylibThread};
+use raylib::{RaylibHandle, RaylibThread, ffi::{Color, GuiControlProperty, GuiDefaultProperty}, rgui::RaylibGuiState};
 
 use crate::window::{StateChange, state_func};
 
@@ -12,7 +12,6 @@ fn main() {
         .size(640, 480)
         .title("Hello, World")
         .build();
-    
 
     let mut current_state = StateChange::WelcomeWindow;
 
