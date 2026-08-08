@@ -30,7 +30,7 @@ fn state_func(state: &mut StateChange, rl: &mut RaylibHandle, thread: &RaylibThr
             window::new_canvas_popup(rl, &thread)
         },
         OpenCanvas(textmode_info) =>{
-            editor_window(textmode_info.to_owned(), rl, &thread)
+            editor_window(textmode_info.to_owned(), rl, &thread, &rl.get_frame_time())
         }
         Exit =>{Exit}
     };
