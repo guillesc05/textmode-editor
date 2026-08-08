@@ -1,5 +1,6 @@
 use std::fs;
 
+use raylib::ffi::CSSPalette;
 use raylib::{ffi::Rectangle, prelude::*};
 use raylib::{RaylibHandle, RaylibThread};
 
@@ -7,7 +8,9 @@ use crate::rect_utils::{centered_rectangle, relative_rectangle_centered};
 use crate::textmode_info::{TextmodeInfo};
 use crate::window::StateChange::OpenCanvas;
 
+#[derive(PartialEq)]
 pub enum StateChange{
+    WelcomeWindow,
     NewProject,
     OpenCanvas(TextmodeInfo),
     Exit
@@ -106,6 +109,21 @@ pub fn load_project() -> Option<TextmodeInfo>{
     
 }
 
-pub fn editor_window(){
+pub fn editor_window(textmode_info: TextmodeInfo, rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
+    while !rl.window_should_close() {
+        let mut d = rl.begin_drawing(&thread);
+        
 
+        for j in 0..textmode_info.y_size{
+            for i in 0..textmode_info.x_size{
+                d.draw_rectangle_lines(i as i32* 50, j as i32 * 50, 50, 50, Color::WHITE);
+            }
+        }
+
+
+        d.clear_background(Color::BLACK);
+
+    }
+
+    StateChange::Exit
 }

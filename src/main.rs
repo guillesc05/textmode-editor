@@ -1,6 +1,6 @@
-use raylib::{ffi::Rectangle, prelude::*};
+use raylib::{RaylibHandle, RaylibThread};
 
-use crate::window::StateChange::{Exit, NewProject, OpenCanvas};
+use crate::window::{StateChange::{self, Exit, NewProject, OpenCanvas, WelcomeWindow}, editor_window};
 
 mod window;
 mod textmode_info;
@@ -12,18 +12,28 @@ fn main() {
         .size(640, 480)
         .title("Hello, World")
         .build();
+    
 
-    let mut font = rl.load_font(&thread, "dungeon-mode.ttf").unwrap();
+    let mut current_state = WelcomeWindow;
 
-    let welcome_response = window::welcome_window(&mut rl, &thread);
+    while current_state != Exit{
+        state_func(&mut current_state, &mut rl, &thread);
+    }
+}
 
-    match welcome_response{
+fn state_func(state: &mut StateChange, rl: &mut RaylibHandle, thread: &RaylibThread ){
+    let return_state = match state{
+        WelcomeWindow => {
+            window::welcome_window(rl, thread)
+        },
         NewProject =>{
-            window::new_canvas_popup(&mut rl, &thread);
+            window::new_canvas_popup(rl, &thread)
         },
         OpenCanvas(textmode_info) =>{
-
+            editor_window(textmode_info.to_owned(), rl, &thread)
         }
-        Exit =>{}
-    }
+        Exit =>{Exit}
+    };
+
+    *state = return_state;
 }

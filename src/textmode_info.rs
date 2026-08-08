@@ -1,18 +1,18 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct CharInfo{
     character: char,
     foreground_color: (u8, u8, u8),
     background_color: (u8, u8, u8)
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct TextmodeInfo{
-    font: String,
-    x_size: u32,
-    y_size: u32,
-    tile_info: Vec<Vec<Option<CharInfo>>>
+    pub font: String,
+    pub x_size: u32,
+    pub y_size: u32,
+    pub tile_info: Vec<Vec<Option<CharInfo>>>
 }
 
 impl TextmodeInfo{
