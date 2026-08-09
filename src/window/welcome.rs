@@ -2,7 +2,7 @@ use std::fs;
 
 use raylib::{RaylibHandle, RaylibThread, drawing::RaylibDraw, ffi::{Color, GuiControl, GuiDefaultProperty, Vector2}, rgui::{RaylibGuiAdvanced, RaylibGuiState}};
 
-use crate::{rect_utils::centered_rectangle, textmode_info::TextmodeInfo, window::StateChange};
+use crate::{utils::rect_utils::centered_rectangle, textmode_info::TextmodeInfo, window::StateChange};
 
 pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     rl.gui_set_style(GuiControl::DEFAULT, GuiDefaultProperty::TEXT_SIZE, 25);

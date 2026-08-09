@@ -4,7 +4,8 @@ use crate::window::{StateChange, state_func};
 
 mod window;
 mod textmode_info;
-mod rect_utils;
+
+mod utils;
 
 fn main() {
 
