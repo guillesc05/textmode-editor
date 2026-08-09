@@ -2,9 +2,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct CharInfo{
-    character: char,
-    foreground_color: (u8, u8, u8),
-    background_color: (u8, u8, u8)
+    pub character: char,
+    pub foreground_color: (u8, u8, u8),
+    pub background_color: (u8, u8, u8)
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
