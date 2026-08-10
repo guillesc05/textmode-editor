@@ -1,72 +1,36 @@
-use raylib::{RaylibHandle, RaylibThread, drawing::{RaylibDraw, RaylibDrawHandle}, ffi::{CSSPalette, Color, MouseButton, RaylibPalette, Rectangle, Vector2}, text::Font};
+use std::cmp::min;
 
-use crate::{textmode_info::{CharInfo, TextmodeInfo}, utils::font_utils::CP_437_CHARS, window::StateChange};
+use raylib::{RaylibHandle, RaylibThread, drawing::{RaylibDraw, RaylibDrawHandle}, ffi::{CSSPalette, Color, MouseButton, RaylibPalette, Rectangle, Vector2}, init, text::Font};
 
-const INITIAL_PX_VAL: i32 = 50;
-const WHEEL_SPEED: f32 = 0.05;
+use crate::{textmode_info::{CharInfo, TextmodeInfo}, utils::{font_utils::CP_437_CHARS, rect_utils::{centered_rectangle, relative_rectangle_centered}}, window::{StateChange, editor::canvas::CanvasInfo}};
+
+mod canvas;
+mod toolkit;
+
+// The width that takes the editor canvas
+const CANVAS_WIDTH_PROPORTION: f32 = 0.7;
+
 pub fn editor_window(textmode_info: TextmodeInfo, rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
-
     let mut textmode_info = textmode_info;
-
-    let mut zoom_value = 1.0;
-    let mut offset = Vector2::zero();
-    
     let font = rl.load_font_ex(&thread, "dungeon-mode.ttf", 8, Some(CP_437_CHARS)).unwrap();
+
+    let initial_px_val = {
+        let tile_width_x = rl.get_screen_width() as f32 / textmode_info.x_size as f32;
+        let tile_width_y = rl.get_screen_height() as f32 / textmode_info.y_size as f32;
+
+        min(tile_width_x as i32, tile_width_y as i32)
+    };
+    let mut canvas_info= CanvasInfo::new(canvas::get_canvas_rect(rl.get_screen_height(), rl.get_screen_height()), initial_px_val);
+
+    let mut selected_character = None;
     
     while !rl.window_should_close() {
-        //Logic
-        if rl.is_mouse_button_down(MouseButton::MOUSE_BUTTON_RIGHT){
-            offset += rl.get_mouse_delta();
-        }
-        
-        zoom_value += rl.get_mouse_wheel_move_v().y * WHEEL_SPEED;
-        if zoom_value <= 0.0{
-            zoom_value = 0.001;
-        }
-        
-        let tile_width = zoom_value * INITIAL_PX_VAL as f32;
-        
-        let canvas_size = Vector2::new(textmode_info.x_size as f32 * tile_width as f32, textmode_info.y_size as f32 * tile_width as f32);
-        
-        let screen_offset = Vector2::new(rl.get_screen_width() as f32 / 2.0, rl.get_screen_height() as f32 / 2.0);
-
-        let mut tile_hover: Option<(usize, usize)> = None;
-        
-        //Draw
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::GREY);
 
-        for j in 0..textmode_info.y_size{
-            for i in 0..textmode_info.x_size{
+        canvas::canvas_logic(&mut canvas_info, &mut textmode_info, &font, &mut d, thread);
 
-                //Tile position and scale in screen
-                let curr_tile = Rectangle{
-                    x: i as f32 * INITIAL_PX_VAL as f32 * zoom_value + offset.x - canvas_size.x / 2.0 + screen_offset.x,
-                    y : j as f32 * INITIAL_PX_VAL as f32 * zoom_value + offset.y -canvas_size.y / 2.0 + screen_offset.y,
-                    width: tile_width,
-                    height: tile_width
-                };
-
-                d.draw_rectangle_lines(curr_tile.x as i32, curr_tile.y as i32, curr_tile.width as i32, curr_tile.height as i32, Color::WHITE);
-                
-                draw_tile(&textmode_info.tile_info[j as usize][i as usize], &font, &curr_tile, &mut d);
-
-                if curr_tile.check_collision_point_rec(d.get_mouse_position()){
-                    tile_hover = Some((i as usize, j as usize));
-                }
-
-            }
-        }
-
-        if tile_hover != None && d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT){
-            let pos = tile_hover.unwrap();
-
-            textmode_info.tile_info[pos.1][pos.0] = Some(CharInfo{
-                character: '♥',
-                foreground_color: (255,255,255),
-                background_color: (255,39,50)
-            });
-        }
+        toolkit::toolkit_logic(&mut d, &mut selected_character, &font);
     }
 
     StateChange::Exit
