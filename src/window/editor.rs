@@ -22,13 +22,13 @@ pub fn editor_window(textmode_info: TextmodeInfo, rl: &mut RaylibHandle, thread:
     };
     let mut canvas_info= CanvasInfo::new(canvas::get_canvas_rect(rl.get_screen_height(), rl.get_screen_height()), initial_px_val);
 
-    let mut selected_character = None;
+    let mut selected_character = CharInfo { character: 'A', foreground_color: (255,255,255), background_color: (0,0,0) };
     
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::GREY);
 
-        canvas::canvas_logic(&mut canvas_info, &mut textmode_info, &font, &mut d, thread);
+        canvas::canvas_logic(&mut canvas_info, &mut textmode_info, &selected_character, &font, &mut d, thread);
 
         toolkit::toolkit_logic(&mut d, &mut selected_character, &font);
     }

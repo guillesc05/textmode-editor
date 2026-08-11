@@ -18,3 +18,13 @@ pub fn relative_rectangle_centered(parent_rect: &Rectangle, relative_position: V
         height: height }
 
 }
+
+pub fn centered_rectangle_in_rect(parent_rect: &Rectangle, size: Vector2) -> Rectangle{
+    let center_x= parent_rect.x + parent_rect.width/2.0;
+    let center_y= parent_rect.y + parent_rect.height/2.0;
+    Rectangle { 
+        x: center_x- size.x / 2.0,
+        y: center_y - size.y / 2.0, 
+        width: size.x, 
+        height: size.y }
+}

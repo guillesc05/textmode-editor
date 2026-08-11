@@ -29,7 +29,7 @@ pub fn get_canvas_rect(screen_width: i32, screen_height: i32) -> Rectangle{
             width: screen_width as f32 * CANVAS_WIDTH_PROPORTION, 
             height: screen_height as f32 }
     }
-pub fn canvas_logic(canvas_info: &mut CanvasInfo, textmode_info: &mut TextmodeInfo, font: &Font, d: &mut RaylibDrawHandle, thread: &RaylibThread){
+pub fn canvas_logic(canvas_info: &mut CanvasInfo, textmode_info: &mut TextmodeInfo, selected_character: &CharInfo, font: &Font, d: &mut RaylibDrawHandle, thread: &RaylibThread){
     //Logic
         if d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_RIGHT){
             canvas_info.offset += d.get_mouse_delta();
@@ -75,10 +75,6 @@ pub fn canvas_logic(canvas_info: &mut CanvasInfo, textmode_info: &mut TextmodeIn
         if tile_hover != None && d.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT){
             let pos = tile_hover.unwrap();
 
-            textmode_info.tile_info[pos.1][pos.0] = Some(CharInfo{
-                character: '♥',
-                foreground_color: (255,255,255),
-                background_color: (255,39,50)
-            });
+            textmode_info.tile_info[pos.1][pos.0] = Some(selected_character.clone());
         }
 }
