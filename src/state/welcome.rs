@@ -2,7 +2,7 @@ use std::fs;
 
 use raylib::{RaylibHandle, RaylibThread, drawing::RaylibDraw, ffi::{Color, GuiControl, GuiDefaultProperty, Vector2}, rgui::{RaylibGuiAdvanced, RaylibGuiState}};
 
-use crate::{utils::rect_utils::centered_rectangle, textmode_info::TextmodeInfo, state::StateChange};
+use crate::{state::{StateChange, editor::editor_info::EditorInfo}, textmode_info::TextmodeInfo, utils::rect_utils::centered_rectangle};
 
 pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     rl.gui_set_style(GuiControl::DEFAULT, GuiDefaultProperty::TEXT_SIZE, 25);
@@ -21,8 +21,8 @@ pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChan
 
         if res == 2{
             match load_project(){
-                Some(textmode_info) =>{
-                    return StateChange::OpenCanvas(textmode_info)
+                Some(editor_info) =>{
+                    return StateChange::OpenCanvas(editor_info)
                 },
                 None =>{
                     return StateChange::Exit
@@ -35,7 +35,7 @@ pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChan
     StateChange::Exit
 }
 
-fn load_project() -> Option<TextmodeInfo>{
+fn load_project() -> Option<EditorInfo>{
     let res = rfd::FileDialog::new().add_filter("Images", &["json"]).pick_file();
 
     match res{
@@ -48,7 +48,7 @@ fn load_project() -> Option<TextmodeInfo>{
                 return None
             },
             Ok(file_string) =>{
-                let textmode_info: Result<TextmodeInfo, serde_json::Error> = serde_json::from_str(&file_string);
+                let textmode_info: Result<EditorInfo, serde_json::Error> = serde_json::from_str(&file_string);
                 match textmode_info{
                     Err(err) =>{
                         return None

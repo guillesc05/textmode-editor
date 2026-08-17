@@ -1,8 +1,8 @@
 use raylib::{color, drawing::{RaylibDraw, RaylibDrawHandle}, ffi::{CSSPalette, Color, RaylibPalette, Rectangle, Vector2, rintf}, rgui::{RaylibGuiAdvanced, RaylibGuiControls}, text::Font};
 
-use crate::{textmode_info::CharInfo, utils::{color_utils::color_from_tuple, font_utils::CP_437_CHARS, rect_utils::{centered_rectangle, centered_rectangle_in_rect, relative_rectangle_centered}}, state::editor::{CANVAS_WIDTH_PROPORTION, editor_info::PaletteState}};
+use crate::{state::editor::{CANVAS_WIDTH_PROPORTION, editor_info::{EditorInfo, PaletteInfo}}, textmode_info::CharInfo, utils::{color_utils::color_from_tuple, font_utils::CP_437_CHARS, rect_utils::{centered_rectangle, centered_rectangle_in_rect, relative_rectangle_centered}}};
 
-pub fn toolkit_logic(d: &mut RaylibDrawHandle, selected_character: &mut CharInfo, font: &Font, color_palette: &mut PaletteState){
+pub fn toolkit_logic(d: &mut RaylibDrawHandle, editor_info: &mut EditorInfo, font: &Font){
     let screen_size = (d.get_screen_width(), d.get_screen_height());
 
     let toolkit_rect = Rectangle{
@@ -24,8 +24,8 @@ pub fn toolkit_logic(d: &mut RaylibDrawHandle, selected_character: &mut CharInfo
     let mut lower_half_rect = upper_half_rect.clone();
     lower_half_rect.y += lower_half_rect.height;
 
-    glyph_selector(d, &upper_half_rect, font, selected_character);
-    color_selector(d, &lower_half_rect, selected_character, color_palette);
+    glyph_selector(d, &upper_half_rect, font, &mut editor_info.selected_character);
+    color_selector(d, &lower_half_rect, &mut editor_info.selected_character, &mut editor_info.palette_state);
 }
 
 fn glyph_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, font: &Font, selected_character: &mut CharInfo){
@@ -62,7 +62,7 @@ fn glyph_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, font: &Font, selec
     }
 }
 
-fn color_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, selected_color: &mut CharInfo, color_palette: &mut PaletteState){
+fn color_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, selected_color: &mut CharInfo, color_palette: &mut PaletteInfo){
     let selected_color_rect_width = (rect.height * 0.25).min(rect.width * 0.25);
     let selected_color_rect = Rectangle{
         height: selected_color_rect_width,

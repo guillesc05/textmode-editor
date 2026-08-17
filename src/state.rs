@@ -1,5 +1,6 @@
 use raylib::{RaylibHandle, RaylibThread};
 
+use crate::state::editor::editor_info::EditorInfo;
 use crate::textmode_info::{TextmodeInfo};
 use crate::state::editor::editor_window;
 use crate::state::new_canvas::new_canvas_window;
@@ -13,7 +14,7 @@ mod editor;
 pub enum StateChange{
     WelcomeWindow,
     NewProject,
-    OpenCanvas(TextmodeInfo),
+    OpenCanvas(EditorInfo),
     Exit
 }
 
@@ -25,8 +26,8 @@ pub fn state_func(state: &mut StateChange, rl: &mut RaylibHandle, thread: &Rayli
         StateChange::NewProject =>{
             new_canvas_window(rl, &thread)
         },
-        StateChange::OpenCanvas(textmode_info) =>{
-            editor_window(textmode_info.to_owned(), rl, &thread)
+        StateChange::OpenCanvas(editor_info) =>{
+            editor_window(editor_info.to_owned(), rl, &thread)
         }
         StateChange::Exit =>{StateChange::Exit}
     };

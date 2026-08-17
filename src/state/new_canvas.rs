@@ -1,6 +1,6 @@
 use raylib::{RaylibHandle, RaylibThread, drawing::RaylibDraw, ffi::{Color, Vector2}, rgui::{RaylibGuiContainers, RaylibGuiControls}};
 
-use crate::{textmode_info::TextmodeInfo, utils::rect_utils::{centered_rectangle, relative_rectangle_centered}, state::StateChange};
+use crate::{state::{StateChange, editor::editor_info::EditorInfo}, textmode_info::TextmodeInfo, utils::rect_utils::{centered_rectangle, relative_rectangle_centered}};
 
 pub fn new_canvas_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     let mut x_value: i32 = 40;
@@ -31,10 +31,10 @@ pub fn new_canvas_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateC
         let confitm_button_rect = relative_rectangle_centered(&parent_rect, Vector2::new(0.5, 0.75), Vector2::new(0.5, 0.15));
 
         if d.gui_button(confitm_button_rect, "Confirm"){
-            return StateChange::OpenCanvas(TextmodeInfo::empty_info(
+            return StateChange::OpenCanvas(EditorInfo::new(
                 x_value as u32, 
                 y_value as u32, 
-                "dungeon-mode.ttf".to_string()))
+                "dungeon-mode.ttf".to_string(), &d))
         }
 
 
