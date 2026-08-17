@@ -1,6 +1,6 @@
 use raylib::{RaylibHandle, RaylibThread, drawing::{RaylibDraw, RaylibDrawHandle}, ffi::{CSSPalette, Color, MouseButton, Rectangle, Vector2}, text::Font};
 
-use crate::{textmode_info::{CharInfo, TextmodeInfo}, window::editor::{CANVAS_WIDTH_PROPORTION, draw_tile}};
+use crate::{textmode_info::{CharInfo, TextmodeInfo}, state::editor::{CANVAS_WIDTH_PROPORTION, draw_tile}};
 
 const WHEEL_SPEED: f32 = 0.05;
 
@@ -47,6 +47,8 @@ pub fn canvas_logic(canvas_info: &mut CanvasInfo, textmode_info: &mut TextmodeIn
         let screen_offset = Vector2::new(d.get_screen_width() as f32 / 2.0, d.get_screen_height() as f32 / 2.0);
 
         let mut tile_hover: Option<(usize, usize)> = None;
+
+        let canvas_rect = get_canvas_rect(d.get_screen_width(), d.get_screen_height());
         
         //Draw
         for j in 0..textmode_info.y_size{
@@ -65,7 +67,7 @@ pub fn canvas_logic(canvas_info: &mut CanvasInfo, textmode_info: &mut TextmodeIn
                 draw_tile(&textmode_info.tile_info[j as usize][i as usize], &font, &curr_tile, d);
 
                 if curr_tile.check_collision_point_rec(d.get_mouse_position()) && 
-                    get_canvas_rect(d.get_screen_width(), d.get_screen_height()).check_collision_point_rec(d.get_mouse_position()){
+                    canvas_rect.check_collision_point_rec(d.get_mouse_position()){
                     tile_hover = Some((i as usize, j as usize));
                 }
 

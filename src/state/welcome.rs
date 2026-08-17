@@ -2,10 +2,11 @@ use std::fs;
 
 use raylib::{RaylibHandle, RaylibThread, drawing::RaylibDraw, ffi::{Color, GuiControl, GuiDefaultProperty, Vector2}, rgui::{RaylibGuiAdvanced, RaylibGuiState}};
 
-use crate::{utils::rect_utils::centered_rectangle, textmode_info::TextmodeInfo, window::StateChange};
+use crate::{utils::rect_utils::centered_rectangle, textmode_info::TextmodeInfo, state::StateChange};
 
 pub fn welcome_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     rl.gui_set_style(GuiControl::DEFAULT, GuiDefaultProperty::TEXT_SIZE, 25);
+    rl.set_target_fps(144);
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);

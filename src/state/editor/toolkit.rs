@@ -1,8 +1,8 @@
-use raylib::{drawing::{RaylibDraw, RaylibDrawHandle}, ffi::{CSSPalette, Color, RaylibPalette, Rectangle, Vector2, rintf}, rgui::{RaylibGuiAdvanced, RaylibGuiControls}, text::Font};
+use raylib::{color, drawing::{RaylibDraw, RaylibDrawHandle}, ffi::{CSSPalette, Color, RaylibPalette, Rectangle, Vector2, rintf}, rgui::{RaylibGuiAdvanced, RaylibGuiControls}, text::Font};
 
-use crate::{textmode_info::CharInfo, utils::{font_utils::CP_437_CHARS, rect_utils::{centered_rectangle, centered_rectangle_in_rect, relative_rectangle_centered}}, window::editor::CANVAS_WIDTH_PROPORTION};
+use crate::{textmode_info::CharInfo, utils::{color_utils::color_from_tuple, font_utils::CP_437_CHARS, rect_utils::{centered_rectangle, centered_rectangle_in_rect, relative_rectangle_centered}}, state::editor::{CANVAS_WIDTH_PROPORTION, editor_info::PaletteState}};
 
-pub fn toolkit_logic(d: &mut RaylibDrawHandle, selected_character: &mut CharInfo, font: &Font){
+pub fn toolkit_logic(d: &mut RaylibDrawHandle, selected_character: &mut CharInfo, font: &Font, color_palette: &mut PaletteState){
     let screen_size = (d.get_screen_width(), d.get_screen_height());
 
     let toolkit_rect = Rectangle{
@@ -25,7 +25,7 @@ pub fn toolkit_logic(d: &mut RaylibDrawHandle, selected_character: &mut CharInfo
     lower_half_rect.y += lower_half_rect.height;
 
     glyph_selector(d, &upper_half_rect, font, selected_character);
-    color_selector(d, &lower_half_rect, selected_character);
+    color_selector(d, &lower_half_rect, selected_character, color_palette);
 }
 
 fn glyph_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, font: &Font, selected_character: &mut CharInfo){
@@ -35,8 +35,8 @@ fn glyph_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, font: &Font, selec
 
     let symbol_width: f32 = glyph_menu_rect.width / 16.0;
 
-    let foreground_color = Color::new(selected_character.foreground_color.0, selected_character.foreground_color.1, selected_character.foreground_color.2, 255);
-    let background_color = Color::new(selected_character.background_color.0, selected_character.background_color.1, selected_character.background_color.2, 255);
+    let foreground_color = color_from_tuple(&selected_character.foreground_color);
+    let background_color = color_from_tuple(&selected_character.background_color);
 
     for (i, character) in CP_437_CHARS.chars().enumerate(){
         let char_rect = Rectangle{
@@ -62,7 +62,7 @@ fn glyph_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, font: &Font, selec
     }
 }
 
-fn color_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, selected_color: &mut CharInfo){
+fn color_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, selected_color: &mut CharInfo, color_palette: &mut PaletteState){
     let selected_color_rect_width = (rect.height * 0.25).min(rect.width * 0.25);
     let selected_color_rect = Rectangle{
         height: selected_color_rect_width,
@@ -77,11 +77,9 @@ fn color_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, selected_color: &m
         ..*rect
     };
 
-    let foreground_color = Color::new(
-        selected_color.foreground_color.0, selected_color.foreground_color.1, selected_color.foreground_color.2, 255);
+    let foreground_color = color_from_tuple(&selected_color.foreground_color);
 
-    let background_color = Color::new(
-        selected_color.background_color.0, selected_color.background_color.1, selected_color.background_color.2, 255);
+    let background_color = color_from_tuple(&selected_color.background_color);
 
     d.draw_rectangle((selected_color_rect.x + selected_color_rect.width * 0.34) as i32, (selected_color_rect.y + selected_color_rect.height * 0.34) as i32, (selected_color_rect.width * 0.66) as i32, (selected_color_rect.height * 0.66) as i32, background_color);
     d.draw_rectangle(selected_color_rect.x as i32, selected_color_rect.y as i32, (selected_color_rect.width * 0.66) as i32, (selected_color_rect.height * 0.66) as i32, foreground_color);
@@ -100,5 +98,5 @@ fn color_selector(d: &mut RaylibDrawHandle, rect: &Rectangle, selected_color: &m
         selected_color.foreground_color = aux;
     }
     
-
+    color_palette.render(d, &color_palette_rect);
 }

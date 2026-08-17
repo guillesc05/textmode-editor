@@ -1,6 +1,6 @@
 use raylib::{RaylibHandle, RaylibThread, drawing::RaylibDraw, ffi::{Color, Vector2}, rgui::{RaylibGuiContainers, RaylibGuiControls}};
 
-use crate::{textmode_info::TextmodeInfo, utils::rect_utils::{centered_rectangle, relative_rectangle_centered}, window::StateChange};
+use crate::{textmode_info::TextmodeInfo, utils::rect_utils::{centered_rectangle, relative_rectangle_centered}, state::StateChange};
 
 pub fn new_canvas_window(rl: &mut RaylibHandle, thread: &RaylibThread) -> StateChange{
     let mut x_value: i32 = 40;

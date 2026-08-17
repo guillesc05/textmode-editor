@@ -1,8 +1,8 @@
 use raylib::{RaylibHandle, RaylibThread, ffi::{Color, GuiControlProperty, GuiDefaultProperty}, rgui::RaylibGuiState};
 
-use crate::window::{StateChange, state_func};
+use crate::state::{StateChange, state_func};
 
-mod window;
+mod state;
 mod textmode_info;
 
 mod utils;

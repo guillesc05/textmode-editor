@@ -1,9 +1,9 @@
 use raylib::{RaylibHandle, RaylibThread};
 
 use crate::textmode_info::{TextmodeInfo};
-use crate::window::editor::editor_window;
-use crate::window::new_canvas::new_canvas_window;
-use crate::window::welcome::welcome_window;
+use crate::state::editor::editor_window;
+use crate::state::new_canvas::new_canvas_window;
+use crate::state::welcome::welcome_window;
 
 mod welcome;
 mod new_canvas;

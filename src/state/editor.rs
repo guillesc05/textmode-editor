@@ -2,10 +2,11 @@ use std::cmp::min;
 
 use raylib::{RaylibHandle, RaylibThread, drawing::{RaylibDraw, RaylibDrawHandle}, ffi::{CSSPalette, Color, MouseButton, RaylibPalette, Rectangle, Vector2}, init, text::Font};
 
-use crate::{textmode_info::{CharInfo, TextmodeInfo}, utils::{font_utils::CP_437_CHARS, rect_utils::{centered_rectangle, relative_rectangle_centered}}, window::{StateChange, editor::canvas::CanvasInfo}};
+use crate::{textmode_info::{CharInfo, TextmodeInfo}, utils::{font_utils::CP_437_CHARS, rect_utils::{centered_rectangle, relative_rectangle_centered}}, state::{StateChange, editor::{canvas::CanvasInfo, editor_info::PaletteState}}};
 
 mod canvas;
 mod toolkit;
+pub mod editor_info;
 
 // The width that takes the editor canvas
 const CANVAS_WIDTH_PROPORTION: f32 = 0.7;
@@ -23,14 +24,17 @@ pub fn editor_window(textmode_info: TextmodeInfo, rl: &mut RaylibHandle, thread:
     let mut canvas_info= CanvasInfo::new(canvas::get_canvas_rect(rl.get_screen_height(), rl.get_screen_height()), initial_px_val);
 
     let mut selected_character = CharInfo { character: 'A', foreground_color: (255,255,255), background_color: (0,0,0) };
+
+    let mut color_palette = PaletteState::new();
     
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::GREY);
+        d.draw_fps(0, 0);
 
         canvas::canvas_logic(&mut canvas_info, &mut textmode_info, &selected_character, &font, &mut d, thread);
 
-        toolkit::toolkit_logic(&mut d, &mut selected_character, &font);
+        toolkit::toolkit_logic(&mut d, &mut selected_character, &font, &mut color_palette);
     }
 
     StateChange::Exit
